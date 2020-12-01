@@ -84,8 +84,6 @@ public class Deck {
             }
         }
 
-        System.out.println("amountOfSuitesLeft = " + amountOfSuitesLeft);
-
        int j = 0;
        String [] availableSuites = new String[amountOfSuitesLeft];
 
@@ -104,49 +102,65 @@ public class Deck {
     // making the necessary control that it doesn't exist etc.
     public Card randomCard()
     {
-        boolean foundSuite = false;
         boolean foundValue = false;
-        int suite = -1;
         int value = -1;
 
 
         // First we have to make sure what suite the given card should have
         String [] availableSuites = availableSuites();
-        int randSuite = rand.nextInt(availableSuites.length);
+        int suite = rand.nextInt(availableSuites.length);
 
         // Now we can obtain it's value
-        int [] availableValues = availableValues(availableSuites[randSuite]);
+        int [] availableValues = availableValues(availableSuites[suite]);
+        int randValue = rand.nextInt(availableValues.length);
 
-        while (!foundValue)
-        {
-            int randValue = 1 + rand.nextInt(13);
-                    if (hasValue(randValue, randSuite))
-                    {
-                        foundValue = true;
-                        value = randValue;
-                    }
-        }
-
-        Card card = new Card (availableSuites[randSuite], value);
+        Card card = new Card (availableSuites[suite], availableValues[randValue]);
 
         return card;
     }
 
-    // TODO Continue here
     private int[] availableValues(String suite) {
 
-        int countValuesOfString = 13;
+        int [] availableCards = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+
+        int countValuesOfSuite = countValuesOfSuite(suite);
 
         // This method confirms if the card being sought after is unique or not
-        if (cardsInDeck < 52)
+        if (cardsInDeck < 52 && countValuesOfSuite > 0)
             for (Card card : cards)
                 if (card.getSuite().equals(suite))
-                    countValuesOfString --;
+                    availableCards[card.getValue() - 1] = -999;
 
 
-        int [] availableValues = new int [countValuesOfString - 1];
+
+        int [] availableValues = new int [countValuesOfSuite];
+        int j = 0;
+
+        // This assigns the available values to an array of available values
+        for (int availableCard : availableCards)
+            if (availableCard > 0)
+                availableValues[j++] = availableCard;
 
         return availableValues;
+    }
+
+    private int countValuesOfSuite(String suite) {
+
+        if (suite.equals("hearts"))
+            return heartsInDeck;
+
+        if (suite.equals("clubs"))
+            return clubsInDeck;
+
+        if (suite.equals("diamonds"))
+            return diamondsInDeck;
+
+        if (suite.equals("spades"))
+            return spadesInDeck;
+
+        else {
+            return 13;
+        }
     }
 
     // This method allows the user to draw a card from the deck
