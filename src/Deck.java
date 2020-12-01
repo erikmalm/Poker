@@ -111,40 +111,42 @@ public class Deck {
 
 
         // First we have to make sure what suite the given card should have
-        /*
-        while (!foundSuite)
-        {
-            int randSuite = rand.nextInt(4);
-            if (hasSuite(randSuite))
-            {
-                foundSuite = true;
-                suite = randSuite;
-            }
-        }
-
-         */
-        
         String [] availableSuites = availableSuites();
         int randSuite = rand.nextInt(availableSuites.length);
 
         // Now we can obtain it's value
+        int [] availableValues = availableValues(availableSuites[randSuite]);
+
         while (!foundValue)
         {
             int randValue = 1 + rand.nextInt(13);
-                    if (hasValue(randValue, suite))
+                    if (hasValue(randValue, randSuite))
                     {
                         foundValue = true;
                         value = randValue;
                     }
         }
 
-        Card card = new Card (suites[suite], value);
+        Card card = new Card (availableSuites[randSuite], value);
 
-        String [] availableSuites = availableSuites();
-
-        for (int i = 0; i < availableSuites.length; i ++)
-            System.out.print(availableSuites[i] + " ");
         return card;
+    }
+
+    // TODO Continue here
+    private int[] availableValues(String suite) {
+
+        int countValuesOfString = 13;
+
+        // This method confirms if the card being sought after is unique or not
+        if (cardsInDeck < 52)
+            for (Card card : cards)
+                if (card.getSuite().equals(suite))
+                    countValuesOfString --;
+
+
+        int [] availableValues = new int [countValuesOfString - 1];
+
+        return availableValues;
     }
 
     // This method allows the user to draw a card from the deck
