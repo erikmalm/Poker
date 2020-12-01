@@ -4,8 +4,10 @@ public class Main {
     {
         Deck deck = new Deck();
 
+
         for (int i = 0; i < 52; i ++)
             deck.drawCard();
+
 
         for (int i = 0; i < deck.cards.length; i ++)
             System.out.println(i + ": " + deck.cards[i]);
