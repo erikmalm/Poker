@@ -5,134 +5,65 @@ public class Deck {
 
     public static final Random rand = new Random();
 
+    String [] suites = {"hearts","clubs","diamonds","spades"};
+
+    // These are all the cards that have been dealt from the deck
+    Card [] cards;
+
     // We want to keep track of the amount of cards left in the deck
-    int cardsInDeck = 52;
+    private int cardsInDeck = 52;
 
     // We also want to keep track of the different suites
-    int heartsInDeck = 13;
-    int clubsInDeck = 13;
-    int diamondsInDeck = 13;
-    int spadesInDeck = 13;
+    private int heartsInDeck = 13;
+    private int clubsInDeck = 13;
+    private int diamondsInDeck = 13;
+    private int spadesInDeck = 13;
 
     // There are four typs of suites
     // [0] = "hearts"
     // [1] = "clubs"
     // [2] = "diamonds"
     // [3] = "spades"
-    String [] suites = {"hearts","clubs","diamonds","spades"};
-
-    // This is all the cards that have been dealt from the deck
-    Card [] cards;
-
-    public Card dealCard ()
-            throws NoSuchElementException
-    {
-        if (!hasCards())
-            throw new NoSuchElementException("No cards left!");
-
-        Card card = randomCard();
-
-        return card;
-    }
-
-    // Method that checks if there are still cards left in the deck
-    public boolean hasCards ()
-    {
-        return cardsInDeck > 0;
-    }
-
-    public boolean hasSuite (int t)
-    {
-
-        boolean suiteHasCards = false;
-
-        if (t == 0)
-            suiteHasCards = heartsInDeck > 0;
-        if (t == 1)
-            suiteHasCards = clubsInDeck > 0;
-        if (t == 2)
-            suiteHasCards = diamondsInDeck > 0;
-        if (t == 3)
-            suiteHasCards = spadesInDeck > 0;
-
-        return suiteHasCards;
-    }
-
-    private boolean hasValue(int randValue, int suite) {
-
-        boolean uniqueCard = true;
-
-        // This method confirms if the card being sought after is unique or not
-        if (cardsInDeck < 52)
-            for (Card card : cards)
-                if (card.getSuite().equals(suites[suite]) && card.getValue() == randValue)
-                    uniqueCard = false;
-
-        return uniqueCard;
-    }
-
-    // The method returns an array of the available suites for the user
-    public String [] availableSuites()
-    {
-        int amountOfSuitesLeft = 0;
-
-        // Count the amount of suites left
-        for (int i = 0; i < 4; i ++)
-        {
-            if (hasSuite(i)) {
-                amountOfSuitesLeft ++;
-            }
-        }
-
-       int j = 0;
-       String [] availableSuites = new String[amountOfSuitesLeft];
-
-       for (int i = 0; i < 4; i ++)
-       {
-           if (hasSuite(i)) {
-               availableSuites[j++] = suites[i];
-           }
-       }
-
-        return availableSuites;
-    }
-
 
     // Method that creates a new random card from the deck,
     // making the necessary control that it doesn't exist etc.
     public Card randomCard()
     {
-        boolean foundValue = false;
-        int value = -1;
-
-
         // First we have to make sure what suite the given card should have
         String [] availableSuites = availableSuites();
         int suite = rand.nextInt(availableSuites.length);
 
-        // Now we can obtain it's value
+        // Now we can obtain its value
         int [] availableValues = availableValues(availableSuites[suite]);
-        int randValue = rand.nextInt(availableValues.length);
+        int value = rand.nextInt(availableValues.length);
 
-        Card card = new Card (availableSuites[suite], availableValues[randValue]);
-
-        return card;
+        // Knowing its suite and value, we can now create the card
+        return new Card (availableSuites[suite], availableValues[value]);
     }
+
+
+    /**************************************************
+     * METHODS THAT CHECK FOR AVAILABILITY OF SUITES
+     * AND VALUES OF CARDS
+     * ***********************************************/
 
     private int[] availableValues(String suite) {
 
+        // By default, the available cards are 1 to 13 as follows
         int [] availableCards = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
+        // We will begin by counting the number of cards left in our suite
         int countValuesOfSuite = countValuesOfSuite(suite);
 
-        // This method confirms if the card being sought after is unique or not
-        if (cardsInDeck < 52 && countValuesOfSuite > 0)
+        // This will remove all cards from array availableCards by changing their value to -1
+        // Their position is by default relative to their value by - 1
+        if (cardsInDeck < 52)
             for (Card card : cards)
                 if (card.getSuite().equals(suite))
-                    availableCards[card.getValue() - 1] = -999;
+                    availableCards[card.getValue() - 1] = -1;
 
-
-
+        // We can now declare our array of available values, which should hold
+        // all the available cards of our current suite
         int [] availableValues = new int [countValuesOfSuite];
         int j = 0;
 
@@ -144,6 +75,32 @@ public class Deck {
         return availableValues;
     }
 
+    // The method returns an array of the available suites for the user
+    private String [] availableSuites()
+    {
+        int amountOfSuitesLeft = 0;
+
+        // Count the total amount of suites left
+        for (int i = 0; i < 4; i ++)
+            if (countValuesOfSuite(suites[i]) > 0)
+                amountOfSuitesLeft ++;
+
+        // Declare String array to store the available suites to randomize from AND,
+        // declare variable j that will be used to assign values to array of available suites
+        String [] availableSuites = new String[amountOfSuitesLeft];
+        int j = 0;
+
+        // Declare which suites are left to select from
+        for (int i = 0; i < 4; i ++)
+            if (countValuesOfSuite(suites[i]) > 0)
+                availableSuites[j++] = suites[i];
+
+        // Return array of available suites
+        return availableSuites;
+    }
+
+    // Method to count the amount of cards left in each suite
+    // This method can also easily be used to check if the suit has any cards left
     private int countValuesOfSuite(String suite) {
 
         if (suite.equals("hearts"))
@@ -163,10 +120,10 @@ public class Deck {
         }
     }
 
+
     // This method allows the user to draw a card from the deck
     // This will generate a new card
     // TODO Create an exception!
-
     public void drawCard(Card card)
     {
         Card []     cards = new Card[53 - cardsInDeck];
@@ -190,11 +147,8 @@ public class Deck {
             spadesInDeck --;
     }
 
-
     public int leftInDeck ()
     {
         return cardsInDeck;
     }
 }
-
-
