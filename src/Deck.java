@@ -5,13 +5,18 @@ public class Deck {
 
     public static final Random rand = new Random();
 
-    String [] suites = {"hearts","clubs","diamonds","spades"};
-
     // These are all the cards that have been dealt from the deck
     Card [] cards;
 
     // We want to keep track of the amount of cards left in the deck
     private int cardsInDeck = 52;
+
+    // There are four typs of suites
+    // [0] = "hearts"
+    // [1] = "clubs"
+    // [2] = "diamonds"
+    // [3] = "spades"
+    String [] suites = {"hearts","clubs","diamonds","spades"};
 
     // We also want to keep track of the different suites
     private int heartsInDeck = 13;
@@ -19,11 +24,37 @@ public class Deck {
     private int diamondsInDeck = 13;
     private int spadesInDeck = 13;
 
-    // There are four typs of suites
-    // [0] = "hearts"
-    // [1] = "clubs"
-    // [2] = "diamonds"
-    // [3] = "spades"
+
+    /**************************************************
+     * METHODS THAT LETS THE USER DEAL NEW CARDS
+     * FROM THE DECK
+     * ***********************************************/
+
+    // This method allows the user to draw a card from the deck
+    // This will generate a new card
+    // TODO Create an exception!
+    public void drawCard()
+    {
+        Card []     cards = new Card[53 - cardsInDeck];
+        int i = 0;
+
+        if (cardsInDeck < 52)
+            for (i = 0; i < cards.length - 1; i ++)
+                cards[i] = this.cards[i];
+
+        cards[i] = randomCard();
+        this.cards = cards;
+
+        cardsInDeck --;
+        if (cards[i].getSuite().equals("hearts"))
+            heartsInDeck --;
+        if (cards[i].getSuite().equals("clubs"))
+            clubsInDeck --;
+        if (cards[i].getSuite().equals("diamonds"))
+            diamondsInDeck --;
+        if (cards[i].getSuite().equals("spades"))
+            spadesInDeck --;
+    }
 
     // Method that creates a new random card from the deck,
     // making the necessary control that it doesn't exist etc.
@@ -40,7 +71,6 @@ public class Deck {
         // Knowing its suite and value, we can now create the card
         return new Card (availableSuites[suite], availableValues[value]);
     }
-
 
     /**************************************************
      * METHODS THAT CHECK FOR AVAILABILITY OF SUITES
@@ -118,33 +148,6 @@ public class Deck {
         else {
             return 13;
         }
-    }
-
-
-    // This method allows the user to draw a card from the deck
-    // This will generate a new card
-    // TODO Create an exception!
-    public void drawCard(Card card)
-    {
-        Card []     cards = new Card[53 - cardsInDeck];
-        int i = 0;
-
-        if (cardsInDeck < 52)
-            for (i = 0; i < cards.length - 1; i ++)
-                cards[i] = this.cards[i];
-
-        cards[i] = new Card (card);
-        this.cards = cards;
-
-        cardsInDeck --;
-        if (card.getSuite().equals("hearts"))
-            heartsInDeck --;
-        if (card.getSuite().equals("clubs"))
-            clubsInDeck --;
-        if (card.getSuite().equals("diamonds"))
-            diamondsInDeck --;
-        if (card.getSuite().equals("spades"))
-            spadesInDeck --;
     }
 
     public int leftInDeck ()
