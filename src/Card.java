@@ -4,21 +4,20 @@ import javax.swing.*;
 public class Card {
 
     private String      suite;
-    private int         value;
+    private int         position;
 
     // Constructor for a new card using String (suite) and Int (value)
-
-    public Card (String suite, int value)
+    public Card (String suite, int position)
     {
         this.suite = suite;
-        this.value = value;
+        this.position = position;
     }
 
     // Constructor for a new card using an object
     public Card (Card card)
     {
         this.suite = card.getSuite();
-        this.value = card.getValue();
+        this.position = card.getPosition();
     }
 
     public String getSuite()
@@ -26,26 +25,40 @@ public class Card {
         return suite;
     }
 
-    public int getValue()
-    {
+    public int getValue() {
+        int value = position;
+
+        if (position == 1)
+            value += 13;
+
         return value;
+    }
+
+    public int getPosition()
+    {
+        return position;
     }
 
     public String toString()
     {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder("[");
 
-        if (this.value < 11)
-            sb.append(value + " of " + this.suite);
+        if (this.position == 1)
+            sb.append("ace of " + this.suite);
 
-        if (this.value == 11)
+        if (position > 1 && position < 11)
+            sb.append(position + " of " + this.suite);
+
+        if (this.position == 11)
             sb.append("jack of " + this.suite);
 
-        if (this.value == 12)
+        if (this.position == 12)
             sb.append("queen of " + this.suite);
 
-        if (this.value == 13)
+        if (this.position == 13)
             sb.append("king of " + this.suite);
+
+        sb.append("]");
 
         return sb.toString();
     }

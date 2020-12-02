@@ -24,42 +24,37 @@ public class Deck {
     private int [] diamonds = {1,2,3,4,5,6,7,8,9,10,11,12,13};
     private int [] spades = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 
-    // The deck can be seen as a matrix of 4 suites and 13 values of each suite
-    private int [][] deck = new int [4][13];
-
-    // There are four typs of suites and they are placed in the following positions:
-    // [0] = "hearts"
-    // [1] = "clubs"
-    // [2] = "diamonds"
-    // [3] = "spades"
-
-    // We need to generate the deck:
-/*
-    for (int i = 0; i < 4 ; i ++ )
-        for (int j = 0; i < 13; j++)
-            deck[i][j] = j + 1;
-            
- */
-
-
-
     /**************************************************
-     * METHODS THAT LETS THE USER DEAL NEW CARDS
-     * FROM THE DECK
+     * METHODS THAT LETS THE USER DRAW AND
+     * DEAL NEW CARDS FROM THE DECK
      * ***********************************************/
 
+    // The method deal card utilizes the draw card method,
+    // but only if there are more cards in the deck AND then
+    // returns a copy of the new card
+
+    public Card dealCard() {
+
+        if (cardsLeftInDeck() == 0 )
+            return null;
+
+        int position = 52 - cardsLeftInDeck();
+        drawCard();
+        return getCard(position);
+    }
+
     // This method allows the user to draw a card from the deck
-    // This will generate a new card
-    public void drawCard()
+    // This will generate a new card and add it to array cards
+    private void drawCard()
     throws NoMoreCardsException
     {
-        if (leftInDeck() == 0)
+        if (cardsLeftInDeck() == 0)
             throw new NoMoreCardsException ("Can't draw more cards, deck is empty!");
 
-        Card []     cards = new Card[53 - leftInDeck()];
+        Card []     cards = new Card[53 - cardsLeftInDeck()];
         int i = 0;
 
-        if (leftInDeck() < 52)
+        if (cardsLeftInDeck() < 52)
             for (i = 0; i < cards.length - 1; i ++)
                 cards[i] = this.cards[i];
 
@@ -68,14 +63,20 @@ public class Deck {
         removeCardFromDeck(cards[i]);
     }
 
-    // The method deal card utilizes the draw card method, but also
-    // returns a copy of the new card
+    // Method that creates a new random card from the deck,
+    // making the necessary control that it doesn't exist etc.
+    private Card randomCard()
+    {
+        // First we have to make sure what suite the given card should have
+        String [] availableSuites = availableSuites();
+        int suite = rand.nextInt(availableSuites.length);
 
-    public Card dealCard() {
+        // Now we can obtain its value
+        int [] availableValues = getRemainingCardsOfSuite(availableSuites[suite]);
+        int value = rand.nextInt(availableValues.length);
 
-        int position = 52 - leftInDeck();
-        drawCard();
-        return getCard(position);
+        // Knowing its suite and value, we can now create the card
+        return new Card (availableSuites[suite], availableValues[value]);
     }
 
     // The method copies the card in the current position
@@ -85,43 +86,38 @@ public class Deck {
         return card;
     }
 
+    // When drawing a card from the deck,
+    // we also want to remove this from the deck
     private void removeCardFromDeck(Card card) {
 
         if (card.getSuite().equals("hearts"))
-            hearts[card.getValue() - 1] = -1;
+            hearts[card.getPosition() - 1] = -1;
 
         if (card.getSuite().equals("clubs"))
-            clubs[card.getValue() - 1] = - 1;
+            clubs[card.getPosition() - 1] = - 1;
 
         if (card.getSuite().equals("diamonds"))
-            diamonds[card.getValue() - 1] = - 1;
+            diamonds[card.getPosition() - 1] = - 1;
 
         if (card.getSuite().equals("spades"))
-            spades[card.getValue() - 1] = - 1;
+            spades[card.getPosition() - 1] = - 1;
     }
 
-    // Method that creates a new random card from the deck,
-    // making the necessary control that it doesn't exist etc.
-    public Card randomCard()
-    {
-        // First we have to make sure what suite the given card should have
-        String [] availableSuites = availableSuites();
-        int suite = rand.nextInt(availableSuites.length);
-
-        // Now we can obtain its value
-        // int [] availableValues = availableValues(availableSuites[suite]);
-        int [] availableValues = getRemainingCardsOfSuite(availableSuites[suite]);
-        int value = rand.nextInt(availableValues.length);
-
-        // Knowing its suite and value, we can now create the card
-        return new Card (availableSuites[suite], availableValues[value]);
-    }
-
-    /**************************************************
+     /**************************************************
      * METHODS THAT CHECK FOR AVAILABILITY OF SUITES
      * AND VALUES OF CARDS
      * ***********************************************/
 
+     // The method counts the amount of cards remaining in the deck
+     public int cardsLeftInDeck ()
+     {
+         int amount = 0;
+
+         for (int i = 0; i < 4; i ++)
+             amount += getRemainingCardsOfSuite(suites[i]).length;
+
+         return amount;
+     }
 
     // The method returns an array of the available suites for the user
     private String [] availableSuites()
@@ -176,18 +172,28 @@ public class Deck {
         return amount;
     }
 
-    // The method counts the amount of cards remaining in the deck
-    public int leftInDeck ()
-    {
-        int amount = 0;
 
-        for (int i = 0; i < 4; i ++)
-            amount += getRemainingCardsOfSuite(suites[i]).length;
 
-        return amount;
+    // This method uses an array of a specific suite, with the
+    // removed cards denoted as -1 in the array.
+    // The method returns the remaining  cards by excluding these
+    // removed cards from the array and then returning the modified array.
+    public int [] getRemainingCardsOfSuite (String suite) {
+
+        int[] copy = getCardsOfSuite(suite);
+        int[] remainingCards = new int[countValuesOfSuite(suite)];
+        int j = 0;
+
+        for (int i = 0; i < copy.length; i++)
+            if (copy[i] > 0)
+                remainingCards[j++] = copy[i];
+
+        return remainingCards;
     }
 
-    public int [] getCardsOfSuite(String suite) {
+    // The method returns a copy of the cards in suite in RAW format,
+    // which means that cards removed from the deck are returned as -1 in the array
+    private int [] getCardsOfSuite(String suite) {
 
         int j = 0;
 
@@ -216,19 +222,6 @@ public class Deck {
         }
 
         return null;
-    }
-
-    public int [] getRemainingCardsOfSuite (String suite) {
-
-        int[] copy = getCardsOfSuite(suite);
-        int[] remainingCards = new int[countValuesOfSuite(suite)];
-        int j = 0;
-
-        for (int i = 0; i < copy.length; i++)
-            if (copy[i] > 0)
-                remainingCards[j++] = copy[i];
-
-        return remainingCards;
     }
 
     // EXCEPTIONS
