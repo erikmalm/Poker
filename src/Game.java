@@ -2,13 +2,28 @@ import java.util.*; // Scanner, Locale
 
 public class Game {
 
-    Deck deck;
+    private Deck deck;
+    private Card [] playerCards;
 
-    deck = new Deck();
+    public void setupGame()
+    {
+        this.deck = new Deck();
+        dealCards(5);
+    }
 
-    public Card [] hand = new Card [5];
+    private void dealCards(int cards) {
 
-    for (int i = 0; i < hand.length; i ++)
-        hand[i] = deck.dealCard();
+        Card [] dealtCards = new Card [cards + playerCards.length];
+
+        int pos = 0;
+
+        if (playerCards.length > 0)
+            for (pos = 0; pos < playerCards.length; pos ++)
+                dealtCards[pos] = new Card(playerCards[pos]);
+
+        for (int i = pos; i < dealtCards.length; i ++)
+            dealtCards[i] = deck.dealCard();
+
+    }
 
 }
