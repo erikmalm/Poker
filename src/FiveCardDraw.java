@@ -46,7 +46,7 @@ public class FiveCardDraw {
         Scanner input = new Scanner(System.in);  // Create a Scanner object
         while (!(cardChanges.length() == playerCards.length)) {
 
-            System.out.println("Which cards to hold (h) and which to discard?");
+            System.out.println("Which cards to hold (h) and which to discard (d)?");
             cardChanges = input.nextLine();  // Read user input
         }
 

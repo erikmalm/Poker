@@ -25,8 +25,9 @@ public class Card {
         return suite;
     }
 
+    // The value is equal to it's position in the array + 1
     public int getValue() {
-        int value = position;
+        int value = position + 1;
 
         if (position == 1)
             value += 13;
