@@ -10,9 +10,9 @@ public class FiveCardDraw {
     private int pairs;
     private boolean threeOfAKind;
     private boolean fourOfAKind;
-    private boolean flush = false;
-    private boolean straight = false;
-    private boolean royal = false;
+    private boolean flush;
+    private boolean straight;
+    private boolean royal;
     private Card highestCard;
 
     // Variables to keep track of player card ranking
