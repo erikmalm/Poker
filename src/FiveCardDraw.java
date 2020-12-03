@@ -1,4 +1,5 @@
 import java.util.*; // Scanner, Locale
+import java.util.stream.IntStream;
 
 public class FiveCardDraw {
 
@@ -14,7 +15,7 @@ public class FiveCardDraw {
     private boolean royal = false;
     private Card highestCard;
 
-    //
+    // Variables to keep track of player card ranking
     private int highestRankValue = 0;
     private String highestRank = "";
 
@@ -23,11 +24,19 @@ public class FiveCardDraw {
     {
         this.deck = new Deck();
         dealCards(5);
+
+        longBreak();
         printHand();
         playerTurn();
+
+        longBreak();
         printHand();
         playerTurn();
+
+        longBreak();
         printHand();
+
+        System.out.println("GAME OVER");
     }
 
     public void playerTurn() {
@@ -247,9 +256,10 @@ public class FiveCardDraw {
 
         System.out.println(playerCards[playerCards.length - 1]);
 
-        System.out.print("YOU CURRENTLY HAVE: " + getRank());
+        System.out.println("YOU CURRENTLY HAVE: " + getRank());
 
-        System.out.println("");
+        starsDivider(50);
+
     }
 
     // Returns the current highest rank as a string
@@ -308,6 +318,17 @@ public class FiveCardDraw {
             highestRankValue = 9;
             highestRank = "Royal straight flush";
         }
+    }
+
+    private void longBreak() {
+        for (int i = 0; i < 20; i ++)
+            System.out.println("");
+    }
+
+    private void starsDivider(int stars) {
+
+        IntStream.range(0, stars).mapToObj(i -> "*").forEach(System.out::print);
+        System.out.println("\n");
     }
 
 }
