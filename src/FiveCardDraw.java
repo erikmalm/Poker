@@ -19,6 +19,9 @@ public class FiveCardDraw {
     private int highestRankValue = 0;
     private String highestRank = "";
 
+    // Variable amountOfStars changes the input for starsdivider
+    private int amountOfStars = 70;
+
 
     public void setupGame()
     {
@@ -249,7 +252,7 @@ public class FiveCardDraw {
     // The method will print the players current hand
     private void printHand() {
 
-        System.out.print("YOUR CURRENT HAND: ");
+        System.out.print("PLAYER HAND: ");
 
         for (int i = 0; i < playerCards.length - 1; i ++)
             System.out.print(playerCards[i] + ", ");
@@ -258,7 +261,7 @@ public class FiveCardDraw {
 
         System.out.println("YOU CURRENTLY HAVE: " + getRank());
 
-        starsDivider(50);
+        starsDivider(amountOfStars);
 
     }
 
