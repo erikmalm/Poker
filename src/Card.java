@@ -1,10 +1,10 @@
 import javax.swing.*;
-
+// ♦♣♥♠
 
 public class Card {
 
-    private String      suite;
-    private int         position;
+    private String suite;
+    private int position;
 
     // Constructor for a new card using String (suite) and Int (value)
     public Card (String suite, int position)
@@ -47,16 +47,16 @@ public class Card {
         if (this.position == 1)
             sb.append("ace of " + this.suite);
 
-        if (position > 1 && position < 11)
+        else if (position > 1 && position < 11)
             sb.append(position + " of " + this.suite);
 
-        if (this.position == 11)
+        else if (this.position == 11)
             sb.append("jack of " + this.suite);
 
-        if (this.position == 12)
+        else if (this.position == 12)
             sb.append("queen of " + this.suite);
 
-        if (this.position == 13)
+        else if (this.position == 13)
             sb.append("king of " + this.suite);
 
         sb.append("]");
